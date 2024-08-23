@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// index on the conversation field
-messageSchema.index({ username: 1 });
+// index on the username field
+userSchema.index({ username: 1 });
 
 module.exports = mongoose.model('User', userSchema);
