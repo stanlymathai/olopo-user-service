@@ -1,0 +1,26 @@
+{
+  "name": "olopo-user-service",
+  "version": "1.0.0",
+  "description": "User service.",
+  "main": "./bin/www",
+  "scripts": {
+    "start": "./bin/www",
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stanlymathai/olopo-user-service"
+  },
+  "author": "stanlymathai",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.2",
+    "swagger-ui-dist": "^5.17.14"
+  },
+  "devDependencies": {
+    "jasmine": "^5.2.0",
+    "jasmine-spec-reporter": "^7.0.0"
+  }
+}
