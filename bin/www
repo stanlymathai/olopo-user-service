@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const app = require('../src/app');
+
+const config = require('../src/configs/env.config/app.env');
+const swaggerServer = require('../src/configs/swagger.config.js');
+
+const {
+  app_env,
+  app_port,
+  swagger_port,
+} = config;
+
+const port = normalizePort(app_port || '8000');
+
+console.info('Starting server...');
+
+// Create and start the HTTP server
+const server = http.createServer(app);
+
+server.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});
+
+server.on('error', onError);
+
+// Setup Swagger server for dev env.
+if (app_env == 'development') {
+  const swaggerPort = normalizePort(swagger_port || 8081)
+  swaggerServer.listen(swaggerPort, () => {
+    console.log(`Swagger server is listening on port ${swaggerPort}`);
+  });
+
+  swaggerServer.on('error', onError);
+}
+
+process.on('SIGTERM', shutdown); // On process termination request (e.g., from Docker/K8s)
+process.on('SIGINT', shutdown); // On Ctrl+C
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  shutdown();
+});
+
+function normalizePort(val) {
+  const parsedPort = parseInt(val, 10);
+  return isNaN(parsedPort) ? val : parsedPort;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+
+  const bind = `Port ${port}`;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(`${bind} is already in use`);
+      process.exit(1);
+    default:
+      throw error;
+  }
+}
+
+
+function shutdown() {
+  console.log('Gracefully shutting down');
+  server.close(() => process.exit(0));
+}
